@@ -11,7 +11,7 @@ export default class FooterFilter extends Component {
     const { filter, onFilterChange } = this.props
 
     const buttons = this.buttons.map(({ name, label }) => {
-      const isActive = filter === name
+      isActive = filter === name
       const clazz = isActive ? 'selected' : ''
       return (
         <button className={clazz} key={name} onClick={() => onFilterChange(name)}>
