@@ -9,11 +9,7 @@ import './App.css'
 export default class App extends Component {
   maxId = 100
   state = {
-    todoData: [
-      this.createTodoItem('CBPdcinaqqqq'),
-      this.createTodoItem('Editing task'),
-      this.createTodoItem('Active task'),
-    ],
+    todoData: [],
     filter: 'all',
   }
 
