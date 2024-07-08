@@ -2,23 +2,22 @@ import React, { Component } from 'react'
 import './FooterFilter.css'
 
 export default class FooterFilter extends Component {
-  buttons = [
-    { name: 'all', label: 'All' },
-    { name: 'active', label: 'Active' },
-    { name: 'completed', label: 'Completed' },
-  ]
+  buttons = [{ name: 'All' }, { name: 'Active' }, { name: 'Completed' }]
   render() {
     const { filter, onFilterChange } = this.props
 
-    const buttons = this.buttons.map(({ name, label }) => {
+    const buttons = this.buttons.map(({ name }) => {
       const isActive = filter === name
       const clazz = isActive ? 'selected' : ''
       return (
-        <button className={clazz} key={name} onClick={() => onFilterChange(name)}>
-          {label}
-        </button>
+        <li key={name}>
+          <button className={clazz} onClick={() => onFilterChange(name)}>
+            {name}
+          </button>
+        </li>
       )
     })
-    return <li>{buttons}</li>
+
+    return <>{buttons}</>
   }
 }

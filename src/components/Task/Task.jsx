@@ -7,12 +7,14 @@ export default class Task extends Component {
     editing: false,
     label: this.props.label,
   }
+
   onLabelClick = () => {
     this.setState(({ completed }) => {
       return {
         completed: !completed,
       }
     })
+    this.props.onToggleCompleted(this.props.id)
   }
 
   onEdit = () => {
@@ -27,6 +29,8 @@ export default class Task extends Component {
     this.setState({
       label: e.target.value,
     })
+    const { id, editEdit } = this.props
+    editEdit(id, this.props.label)
   }
 
   editSubmit = (e) => {
@@ -34,8 +38,9 @@ export default class Task extends Component {
 
     this.onEdit()
   }
+
   render() {
-    const { onDelete, data, onToggleCompleted, completed } = this.props
+    const { onDelete, data, completed } = this.props
     const { editing, label } = this.state
 
     const distance = formatDistanceToNow(data, {
@@ -53,13 +58,7 @@ export default class Task extends Component {
     return (
       <li className={className}>
         <div className="view">
-          <input
-            className="toggle"
-            type="checkbox"
-            checked={completed}
-            onClick={this.onLabelClick}
-            onChange={onToggleCompleted}
-          />
+          <input className="toggle" type="checkbox" checked={completed} onChange={this.onLabelClick} />
 
           <label>
             <span className="description">{label}</span>

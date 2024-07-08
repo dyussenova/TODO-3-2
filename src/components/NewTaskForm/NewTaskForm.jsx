@@ -3,7 +3,7 @@ import './NewTaskForm.css'
 
 export default class NewTaskForm extends Component {
   state = {
-    label: ' ',
+    label: '',
   }
 
   onLabelChange = (e) => {
@@ -14,16 +14,19 @@ export default class NewTaskForm extends Component {
 
   onSubmit = (e) => {
     e.preventDefault()
-    this.props.onItemAdded(this.state.label)
-    this.setState({
-      label: ' ',
-    })
+    const correctInput = this.state.label.trim()
+    if (correctInput !== '') {
+      this.props.onItemAdded(correctInput)
+      this.setState({
+        label: '',
+      })
+    }
   }
   render() {
     return (
       <form onSubmit={this.onSubmit}>
         <input
-          type=" text"
+          type="text"
           className="new-todo"
           onChange={this.onLabelChange}
           placeholder="What needs to be done?"

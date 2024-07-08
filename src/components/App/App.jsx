@@ -45,12 +45,25 @@ export default class App extends Component {
       }),
     }))
   }
-  clearCompleted = () => {
-    const filteredItems = this.state.todoData.filter((item) => item.completed === false)
 
-    this.setState({
-      todoData: filteredItems,
+  clearCompleted = () => {
+    this.setState((prevState) => {
+      const filteredItems = prevState.todoData.filter((item) => !item.completed)
+      return {
+        todoData: filteredItems,
+      }
     })
+  }
+  editEdit = (id, newValue) => {
+    this.setState((prevState) => ({
+      todoData: prevState.todoData.map((item) => {
+        if (item.id === id) {
+          return { ...item, label: newValue }
+        } else {
+          return item
+        }
+      }),
+    }))
   }
   addItem = (text) => {
     const newItem = this.createTodoItem(text)
@@ -62,16 +75,17 @@ export default class App extends Component {
       }
     })
   }
+
   onFilterChange = (filter) => {
     this.setState({ filter })
   }
-  filter(items, filter) {
+  filteredItems(items, filter) {
     switch (filter) {
-      case 'all':
+      case 'All':
         return items
-      case 'active':
+      case 'Active':
         return items.filter((item) => !item.completed)
-      case 'completed':
+      case 'Completed':
         return items.filter((item) => item.completed)
       default:
         return items
@@ -81,7 +95,7 @@ export default class App extends Component {
   render() {
     const { filter, todoData } = this.state
 
-    const itemFil = this.filter(todoData, filter)
+    const itemFil = this.filteredItems(todoData, filter)
     const itemCount = itemFil.filter((el) => !el.completed).length
 
     return (
@@ -92,7 +106,12 @@ export default class App extends Component {
             <NewTaskForm onItemAdded={this.addItem} />
           </header>
           <section className="main">
-            <TaskList todos={itemFil} onDelete={this.deleteItem} onToggleCompleted={this.toggleCompleted} />
+            <TaskList
+              todos={itemFil}
+              onDelete={this.deleteItem}
+              onToggleCompleted={this.toggleCompleted}
+              editEdit={this.editEdit}
+            />
             <Footer
               filter={filter}
               onFilterChange={this.onFilterChange}
