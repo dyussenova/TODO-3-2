@@ -18,24 +18,21 @@ export default class Task extends Component {
   }
 
   onEdit = () => {
-    this.setState(({ editing }) => {
-      return {
-        editing: !editing,
-      }
-    })
+    this.setState((prevState) => ({
+      editing: !prevState.editing,
+    }))
   }
 
   onEditChange = (e) => {
     this.setState({
       label: e.target.value,
     })
-    const { id, editEdit } = this.props
-    editEdit(id, this.props.label)
   }
 
   editSubmit = (e) => {
     e.preventDefault()
-
+    const { editEdit } = this.props
+    editEdit(this.state.label)
     this.onEdit()
   }
 
