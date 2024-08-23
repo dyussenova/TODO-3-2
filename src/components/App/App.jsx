@@ -11,13 +11,16 @@ export default class App extends Component {
   state = {
     todoData: [],
     filter: 'all',
+    timerData: {},
   }
 
-  createTodoItem(label) {
+  createTodoItem(label, min, sec) {
     return {
       id: this.maxId++,
       completed: false,
       label,
+      min: min || 0,
+      sec: sec || 0,
       data: new Date(),
     }
   }
@@ -65,8 +68,8 @@ export default class App extends Component {
       }),
     }))
   }
-  addItem = (text) => {
-    const newItem = this.createTodoItem(text)
+  addItem = (text, min = 0, sec = 0) => {
+    const newItem = this.createTodoItem(text, min, sec)
 
     this.setState(({ todoData }) => {
       const newArray = [...todoData, newItem]
@@ -91,6 +94,41 @@ export default class App extends Component {
         return items
     }
   }
+  startTimer = (id) => {
+    if (this.state.timerData[id]) return
+
+    const timer = setInterval(() => {
+      this.setState((prevState) => {
+        const item = prevState.todoData.find((task) => task.id === id)
+        if (!item) return { timerData: { ...prevState.timerData, [id]: null } }
+
+        const newSec = item.sec > 0 ? item.sec - 1 : 59
+        const newMin = item.sec === 0 ? item.min - 1 : item.min
+
+        if (newMin < 0 || (newMin === 0 && newSec < 0)) {
+          clearInterval(prevState.timerData[id])
+          return { timerData: { ...prevState.timerData, [id]: null } }
+        }
+
+        const updatedData = prevState.todoData.map((task) => {
+          if (task.id === id) {
+            return { ...task, min: newMin, sec: newSec }
+          }
+          return task
+        })
+
+        return { todoData: updatedData, timerData: { ...prevState.timerData, [id]: timer } }
+      })
+    }, 1000)
+  }
+  stopTimer = (id) => {
+    if (this.state.timerData[id]) {
+      clearInterval(this.state.timerData[id])
+      this.setState((prevState) => ({
+        timerData: { ...prevState.timerData, [id]: null },
+      }))
+    }
+  }
 
   render() {
     const { filter, todoData } = this.state
@@ -111,6 +149,8 @@ export default class App extends Component {
               onDelete={this.deleteItem}
               onToggleCompleted={this.toggleCompleted}
               editEdit={this.editEdit}
+              startTimer={this.startTimer}
+              stopTimer={this.stopTimer}
             />
             <Footer
               filter={filter}

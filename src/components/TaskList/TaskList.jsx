@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import Task from '../Task'
 import './TaskList.css'
 
-const TaskList = ({ todos, onDelete, onToggleCompleted, editEdit }) => {
+const TaskList = ({ todos, onDelete, onToggleCompleted, editEdit, startTimer, stopTimer }) => {
   const elements = todos.map((item) => {
     const { id, ...itemProps } = item
     return (
@@ -13,6 +13,8 @@ const TaskList = ({ todos, onDelete, onToggleCompleted, editEdit }) => {
         onDelete={() => onDelete(id)}
         onToggleCompleted={() => onToggleCompleted(id)}
         editEdit={(newValue) => editEdit(id, newValue)}
+        startTimer={() => startTimer(id)}
+        stopTimer={() => stopTimer(id)}
       />
     )
   })
