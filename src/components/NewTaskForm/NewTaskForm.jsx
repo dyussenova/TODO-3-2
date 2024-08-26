@@ -7,7 +7,10 @@ export default class NewTaskForm extends Component {
     min: '',
     sec: '',
   }
-
+  isValidNumber = (value) => {
+    const number = Number(value)
+    return !isNaN(number) && number >= 0
+  }
   onLabelChange = (e) => {
     this.setState({
       label: e.target.value,
@@ -15,11 +18,17 @@ export default class NewTaskForm extends Component {
   }
 
   onMinChange = (e) => {
-    this.setState({ min: e.target.value })
+    const value = e.target.value
+    if (this.isValidNumber(value)) {
+      this.setState({ min: value })
+    }
   }
 
   onSecChange = (e) => {
-    this.setState({ sec: e.target.value })
+    const value = e.target.value
+    if (this.isValidNumber(value)) {
+      this.setState({ sec: value })
+    }
   }
   onSubmit = (e) => {
     e.preventDefault()
@@ -34,12 +43,7 @@ export default class NewTaskForm extends Component {
       })
     }
   }
-  handleKeyDown = (e) => {
-    if (e.key === 'Enter') {
-      e.preventDefault()
-      this.onSubmit(e)
-    }
-  }
+
   render() {
     return (
       <form onSubmit={this.onSubmit} className="new-todo-form">
@@ -50,7 +54,6 @@ export default class NewTaskForm extends Component {
           placeholder="What needs to be done?"
           autoFocus
           value={this.state.label}
-          onKeyDown={this.handleKeyDown}
         />
         <input
           className="new-todo-form__timer"
@@ -58,7 +61,6 @@ export default class NewTaskForm extends Component {
           autoFocus
           value={this.state.min}
           onChange={this.onMinChange}
-          onKeyDown={this.handleKeyDown}
         />
         <input
           className="new-todo-form__timer"
@@ -66,8 +68,8 @@ export default class NewTaskForm extends Component {
           autoFocus
           value={this.state.sec}
           onChange={this.onSecChange}
-          onKeyDown={this.handleKeyDown}
         />
+        <button type="submit" style={{ display: 'none' }}></button>
       </form>
     )
   }

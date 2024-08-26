@@ -26,6 +26,7 @@ export default class App extends Component {
   }
 
   deleteItem = (id) => {
+    this.stopTimer(id)
     this.setState(({ todoData }) => {
       const index = todoData.findIndex((elem) => elem.id === id)
 
