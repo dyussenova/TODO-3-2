@@ -7,10 +7,7 @@ export default class NewTaskForm extends Component {
     min: '',
     sec: '',
   }
-  isValidNumber = (value) => {
-    const number = Number(value)
-    return !isNaN(number) && number >= 0
-  }
+
   onLabelChange = (e) => {
     this.setState({
       label: e.target.value,
@@ -18,17 +15,11 @@ export default class NewTaskForm extends Component {
   }
 
   onMinChange = (e) => {
-    const value = e.target.value
-    if (this.isValidNumber(value)) {
-      this.setState({ min: value })
-    }
+    this.setState({ min: e.target.value })
   }
 
   onSecChange = (e) => {
-    const value = e.target.value
-    if (this.isValidNumber(value)) {
-      this.setState({ sec: value })
-    }
+    this.setState({ sec: e.target.value })
   }
   onSubmit = (e) => {
     e.preventDefault()
@@ -56,6 +47,8 @@ export default class NewTaskForm extends Component {
           value={this.state.label}
         />
         <input
+          type="number"
+          min="0"
           className="new-todo-form__timer"
           placeholder="Min"
           autoFocus
@@ -63,6 +56,8 @@ export default class NewTaskForm extends Component {
           onChange={this.onMinChange}
         />
         <input
+          type="number"
+          min="0"
           className="new-todo-form__timer"
           placeholder="Sec"
           autoFocus
