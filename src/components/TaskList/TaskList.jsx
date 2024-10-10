@@ -10,6 +10,7 @@ const TaskList = ({ todos, onDelete, onToggleCompleted, editEdit, startTimer, st
       <Task
         {...itemProps}
         key={id}
+        completed={item.completed}
         onDelete={() => onDelete(id)}
         onToggleCompleted={() => onToggleCompleted(id)}
         editEdit={(newValue) => editEdit(id, newValue)}

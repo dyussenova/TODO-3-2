@@ -1,91 +1,75 @@
-import React, { Component } from 'react'
+import React, { useState, useEffect } from 'react'
 import { formatDistanceToNow } from 'date-fns'
 
-export default class Task extends Component {
-  state = {
-    completed: false,
-    editing: false,
-    label: this.props.label || '',
-    min: this.props.min || 0,
-    sec: this.props.sec || 0,
+const Task = ({
+  id,
+  label: initialLabel,
+  min,
+  sec,
+  completed,
+  data,
+  onToggleCompleted,
+  startTimer,
+  stopTimer,
+  onDelete,
+  editEdit,
+}) => {
+  const [editing, setEditing] = useState(false)
+  const [label, setLabel] = useState(initialLabel || '')
+
+  useEffect(() => {
+    setLabel(initialLabel)
+  }, [initialLabel])
+
+  const onLabelClick = () => {
+    onToggleCompleted(id)
   }
 
-  handleStartTimer = () => {
-    this.props.startTimer(this.props.id)
-  }
-  handleStopTimer = () => {
-    this.props.stopTimer(this.props.id)
+  const onEdit = () => {
+    setEditing((prevEditing) => !prevEditing)
   }
 
-  onLabelClick = () => {
-    this.setState(({ completed }) => {
-      return {
-        completed: !completed,
-      }
-    })
-    this.props.onToggleCompleted(this.props.id)
+  const onEditChange = (e) => {
+    setLabel(e.target.value)
   }
 
-  onEdit = () => {
-    this.setState((prevState) => ({
-      editing: !prevState.editing,
-    }))
-  }
-
-  onEditChange = (e) => {
-    this.setState({
-      label: e.target.value,
-    })
-  }
-
-  editSubmit = (e) => {
+  const editSubmit = (e) => {
     e.preventDefault()
-    const { editEdit } = this.props
-    editEdit(this.state.label)
-    this.onEdit()
-  }
-  componentDidUpdate(prevProps) {
-    if (prevProps.min !== this.props.min || prevProps.sec !== this.props.sec) {
-      this.setState({ min: this.props.min, sec: this.props.sec })
-    }
+    editEdit(label)
+    onEdit()
   }
 
-  render() {
-    const { onDelete, data, completed } = this.props
-    const { editing, label, min, sec } = this.state
+  const distance = formatDistanceToNow(data, { includeSeconds: true })
 
-    const distance = formatDistanceToNow(data, {
-      includeSeconds: true,
-    })
-
-    let className = ' '
-    if (completed) {
-      className = 'completed'
-    }
-    if (editing) {
-      className = 'editing'
-    }
-
-    return (
-      <li className={className}>
-        <div className="view">
-          <input className="toggle" type="checkbox" checked={completed} onChange={this.onLabelClick} />
-          <label>
-            <span className="description">{label}</span>
-            <button className="icon icon-play" onClick={this.handleStartTimer}></button>
-            <button className="icon icon-pause" onClick={this.handleStopTimer}></button>
-            {min}:{sec < 10 ? `0${sec}` : sec}
-            <span className="created">created {distance} ago</span>
-          </label>
-          <button className="icon icon-edit" onClick={this.onEdit}></button>
-          <button className="icon icon-destroy" onClick={onDelete}></button>
-        </div>
-        {this.state.editing && (
-          <form onSubmit={this.editSubmit}>
-            <input type="text" className="edit" value={this.state.label} onChange={this.onEditChange} />
-          </form>
-        )}
-      </li>
-    )
+  let className = ''
+  if (completed) {
+    className = 'completed'
   }
+  if (editing) {
+    className = 'editing'
+  }
+
+  return (
+    <li className={className}>
+      <div className="view">
+        <input className="toggle" type="checkbox" checked={completed} onChange={onLabelClick} />
+        <label>
+          <span className="description">{label}</span>
+          <button className="icon icon-play" onClick={() => startTimer(id)}></button>
+          <button className="icon icon-pause" onClick={() => stopTimer(id)}></button>
+          {min}:{String(sec).padStart(2, '0')}
+          <span className="created">created {distance} ago</span>
+        </label>
+        <button className="icon icon-edit" onClick={onEdit}></button>
+        <button className="icon icon-destroy" onClick={onDelete}></button>
+      </div>
+      {editing && (
+        <form onSubmit={editSubmit}>
+          <input type="text" className="edit" value={label} onChange={onEditChange} />
+        </form>
+      )}
+    </li>
+  )
 }
+
+export default Task
