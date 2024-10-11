@@ -32,7 +32,7 @@ const App = () => {
   }
 
   const clearCompleted = () => {
-    setTodoData(todoData.filter((item) => !item.completed))
+    setTodoData((prevTodoData) => prevTodoData.filter((item) => !item.completed))
   }
 
   const editEdit = (id, newValue) => {
